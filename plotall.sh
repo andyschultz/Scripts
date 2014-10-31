@@ -1,5 +1,7 @@
 #!/bin/sh
 
+#this is a test edit to learn git
+
 # write a gnuplot script
 rm temp.gp
 
