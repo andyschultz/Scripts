@@ -2,9 +2,19 @@
 
 import pandas as pd, numpy as np, glob, sys
 
+def readline_number_x(file,x):
+    for index,line in enumerate(iter(file)):
+        if index+1 == x: return line
+
+    return None
+
+
+
 basefile = sys.argv[1]
 outfile = basefile+'-compiled.txt'
 filelist = glob.glob(basefile+"*[0-9]*")
+
+
 
 
 
@@ -12,11 +22,10 @@ l=[]
 
 
 # Write the first line (wavelengths)
-df = pd.read_csv(filelist[0],skiprows=1,sep="\t",header=None)
-df = df.drop([1,2],axis=1)
-df = df*1000000000
-k = df[0].values.tolist()
-headers = ["%.2f" % i for i in k]
+df = pd.read_csv(filelist[0],skiprows=17,sep="\t",header=None)
+df = df.drop([2048],axis=0)
+df = df.drop([1],axis=1)
+headers = df[0].values.tolist()
 headers.insert(0,"#Date/Time")
 # l.append(k)
 
@@ -25,10 +34,10 @@ interval = 10
 
 while i<len(filelist):
     row = filelist[i]
-    with open(row,'r') as r:
-        firstline = r.readline()
-        firstline = firstline.lstrip("#\t")
-        firstline = firstline.rstrip("\n")
+    date = readline_number_x(row,3)
+    date = date.lstrip("Date: ")
+    date = date.rstrip("\n")
+    # datetime.strptime(date,"%a %b %d %H:%M:%S %Z %Y") This isn't working. 'module' object has no attribute 'strptime'. Should the right syntax, though the time zone in the computer is wrong.
     print(row + " " + firstline)
     df = pd.read_csv(row,skiprows=1,sep="\t",header=None)
     df = df.drop([0,1],axis=1)
