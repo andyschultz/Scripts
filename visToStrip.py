@@ -22,7 +22,8 @@ def buildrow(i):
     date = datetime.strftime(date,'%Y-%m-%d %X')
     print(row + " " + date)
     df = pd.read_csv(row,skiprows=17,sep="\t",header=None)
-    df = df.drop([2048],axis=0)
+    lastrow = df.shape[0]-1
+    df = df.drop(lastrow,axis=0) #generalize to any length of data
     df = df.drop([0],axis=1)
     df[df < 1] = np.nan
     k = df[1].values.tolist()
@@ -44,7 +45,8 @@ l=[]
 
 # Write the first line (wavelengths)
 df = pd.read_csv(filelist[0],skiprows=17,sep="\t",header=None)
-df = df.drop([2048],axis=0)
+lastrow = df.shape[0]-1
+df = df.drop(lastrow,axis=0) #generalize to any length of data
 df = df.drop([1],axis=1)
 headers = df[0].values.tolist()
 headers.insert(0,"#Date/Time")
