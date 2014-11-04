@@ -1,14 +1,35 @@
 #!/usr/local/bin/python3
 
 import pandas as pd, numpy as np, glob, sys
+from datetime import datetime
 
 def readline_number_x(file,x):
+    
     for index,line in enumerate(iter(file)):
         if index+1 == x: return line
 
     return None
 
-
+def buildrow(i):    
+    row = filelist[i]
+    date = readline_number_x(open(row),3)
+    date = date.lstrip("Date: ")
+    date = date.rstrip("\n")
+    date = date.split()
+    date.pop(4)
+    date = " ".join(date)
+    date = datetime.strptime(date,'%a %b %d %X %Y')
+    date = datetime.strftime(date,'%Y-%m-%d %X')
+    print(row + " " + date)
+    df = pd.read_csv(row,skiprows=17,sep="\t",header=None)
+    df = df.drop([2048],axis=0)
+    df = df.drop([0],axis=1)
+    df[df < 1] = np.nan
+    k = df[1].values.tolist()
+    k = ["%.3f" % i for i in k]
+    k.insert(0,date)
+    l.append(k)
+    i=i+interval
 
 basefile = sys.argv[1]
 outfile = basefile+'-compiled.txt'
@@ -30,23 +51,12 @@ headers.insert(0,"#Date/Time")
 # l.append(k)
 
 i=0
-interval = 10
+
+interval = 1
 
 while i<len(filelist):
-    row = filelist[i]
-    date = readline_number_x(row,3)
-    date = date.lstrip("Date: ")
-    date = date.rstrip("\n")
-    # datetime.strptime(date,"%a %b %d %H:%M:%S %Z %Y") This isn't working. 'module' object has no attribute 'strptime'. Should the right syntax, though the time zone in the computer is wrong.
-    print(row + " " + firstline)
-    df = pd.read_csv(row,skiprows=1,sep="\t",header=None)
-    df = df.drop([0,1],axis=1)
-    df[df < 1] = np.nan
-    k = df[2].values.tolist()
-    k = ["%.4f" % i for i in k]
-    k.insert(0,firstline)
-    l.append(k)
-    i=i+interval
+    buildrow(i)
+    i= i + interval
 
 df = pd.DataFrame(l,columns=headers)
 
