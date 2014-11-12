@@ -70,7 +70,7 @@ df.insert(1,"Cumulative Time","NaN")
 df["Cumulative Time"] = (df.iloc[:,0]-df.iloc[:,0].shift()).fillna(0) 
 df["Cumulative Time"] = df["Cumulative Time"].cumsum(axis=0)
 df["Cumulative Time"] = df["Cumulative Time"] / np.timedelta64(1,'h')
-df["Cumulative Time"] = df["Cumulative Time"].map('{:.4f}'.format)
+df["Cumulative Time"] = df["Cumulative Time"].map('{:.5f}'.format)
 
 
 
