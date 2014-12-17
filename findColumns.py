@@ -20,5 +20,5 @@ def find_nearest(array,value):
 
 for item in sys.argv[2:len(sys.argv)]:
     value = int(item)
-    print(item+": "+str(find_nearest(array,value)+2))  # add one for zeroindex, one for date/time split in gnuplot
+    print(item+": "+str(find_nearest(array,value)))  # No changes needed because of #, Time, Elapsed, Time
     

@@ -20,7 +20,8 @@ with open(file,"w") as output:
             else:
                 output.write(line)
             i += 1
-os.remove("temp.txt")           
+
+os.remove("temp.txt")
         
 
 
