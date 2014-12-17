@@ -8,7 +8,7 @@ def find_nearest(array,value):
     idx = (np.abs(array-value)).argmin()
     return idx
 
-gasflows = "gasflows.txt"
+gasflows = "../gasflows.txt"
 
 # basefile = sys.argv[1] # UNCOMMENT WHEN DONE
 basefile = "transmission"
@@ -24,14 +24,14 @@ df = pd.read_csv(filelist[0],skiprows=1,header=None, sep="\t")
 array = pd.Series(df[0]*1000000000) # Create a pandas series using the first row of the processed data file
 array = array.convert_objects(convert_numeric=True)
 # wavelengths = sys.argv[2:len(sys.argv)] # Take command line arguments for wavelengths of strip file UNCOMMENT WHEN DONE
-wavelengths = [1200,1400,1600,1800,2000,2200,2400]
+wavelengths = [1400,1600,1800,2000,2200,2400]
 
 stripindex = [] # populated by the next cell with the correct indices
 for item in wavelengths:
     value = int(item)
     stripindex.append(find_nearest(array,value))
     
-
+i=0
 output = []
 for file in filelist:
     try:
@@ -54,6 +54,7 @@ for file in filelist:
     values.insert(0,datetime)   # Append Datetime value to list
     output.append(values)       # Add the row entry to the overall list
     
+    
 output = pd.DataFrame(output)
 output[0] =  pd.to_datetime(output.iloc[:,0]) 
 output.insert(1,"Cumulative Time","NaN")
@@ -70,12 +71,14 @@ headers.insert(0,"#Datetime")
 
 output.to_csv("test.txt",index=False,sep="\t",na_rep="NaN",header=headers)
 
-i = 3
+i = 2
 
 gp = open("test.gp",'w')
 
-gp.write("set term png size 2400,1800 fontscale 4.0 font \"Charter, 10\" transparent\n")
-gp.write("set border lc rgb \"#FFFFFF\" lw 3")
+gp.write("set term pngcairo size 2048,1400 fontscale 4.0 font \"Charter-Bold, 10\" transparent\n")
+gp.write("set border lc rgb \"#FFFFFF\" lw 5\n")
+gp.write("")
+
 
 for file in filelist:
     output = file.replace(".txt",".png")
@@ -83,11 +86,11 @@ for file in filelist:
     gp.write("set multiplot layout 2,1\n")
     gp.write("unset key\n")
     gp.write("set xrange [900:2600]\n")
-    gp.write("set yrange [0.5:1.5]\n")
+    gp.write("set yrange [0.5:1.50]\n")
     gp.write("set y2range [0.0:10]\n")
-    gp.write("plot \""+str(file)+"\" u ($1*1000000000):3 w l lc rgb \"#FFFFFF\" lw 3 \n")
-    gp.write("set autoscale x\n")
-    gp.write("plot for [i=6:"+str(len(headers)+1)+"] \"<sed -n '3,"+str(i)+"p' test.txt\" u ($3):i w l,'' u ($3):4 w l axes x1y2, '' u ($3):5 w l axes x1y2\n")
+    gp.write("plot \""+str(file)+"\" u ($1*1000000000):3 w l lc rgb \"#FFFFFF\" lw 4 smooth csplines \n")
+    gp.write("set xrange [0:3]\n")
+    gp.write("plot for [i=6:"+str(len(headers)+1)+"] \"<sed -n '2,"+str(i)+"p' test.txt\" u ($3):i w l lc rgb \"#FFFFFF\" lw 4, '' u 3:($5) w l axes x1y2 lc rgb \"#FFFFFF\" lw 4 \n")
     gp.write("unset multiplot\n")
     gp.write("unset output\n")
     i+=1
@@ -96,3 +99,11 @@ for file in filelist:
 gp.close()
 
 system('gnuplot test.gp')
+
+pnglist = glob.glob(basefile+"*.png")
+
+for file in pnglist:
+    system("convert "+file+" -resize 45% "+file)
+    system('composite -gravity SouthEast '+file+' background.png '+file)
+    print(str(file))
+

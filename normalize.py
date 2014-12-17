@@ -6,7 +6,7 @@
 
 import glob,os,sys,pandas as pd,numpy as np
 
-normal_file = 'nir-transmission01770.txt'
+normal_file = 'transmission00000.txt'
 
 initial = pd.read_csv(normal_file,delimiter='\t',skiprows=1,header=None)
 
