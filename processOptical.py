@@ -38,9 +38,9 @@ def processOptical(tfile,rfile,ofile):
     csv.to_csv(ofile, index=None, sep='\t', float_format='%11.6f')
     
 for row in filelist:
-    processOptical(row+'T.Sample.Raw.csv',row+'R.Sample.Raw.csv',row+'.dat')
+    processOptical(row+'T.Sample.Raw.csv',row+'R.Sample.Raw.csv',row+'.txt')
     outfile = row+".pdf"
-    sourcefile = row+".dat"
+    sourcefile = row+".txt"
     gp.write("set output '"+outfile+"' \n")
     gp.write("plot [200:][0:100] '"+sourcefile+"' u 1:2 w l ls 24 t 'Transmission',\\\n '' u 1:3 w l ls 4 t 'Reflection',\\\n '' u 1:4 w l ls 14 t 'Absorption'\n")
     gp.write("set output\n")
