@@ -41,7 +41,7 @@ plotting.to_csv("tempForPlotting.txt",sep='\t')
 
 gp = open("temp.gp",'w')
 gp.write("set terminal pngcairo \n")
-gp.write("@colorlist\n")
+# gp.write("@colorlist\n")
 gp.write('set style fill solid 0.5\n')
 
 
