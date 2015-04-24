@@ -19,8 +19,8 @@ gp.write("unset title\n")
 gp.write("set key right center\n")
 gp.write("set border 15\n")
 gp.write("set xlabel 'Wavelength (nm)'\n")
-gp.write("set ylabel 'Transmission/Reflection/Absorption (%)'\n")
-gp.write("set xtics 200,100\n\n")
+gp.write("set ylabel 'Transmission/Reflection/Absorption (%)' offset 3\n")
+# gp.write("set xtics 200,100\n\n")
 
 def processOptical(tfile,rfile,ofile):
     dfs = []
@@ -41,8 +41,9 @@ for row in filelist:
     processOptical(row+'T.Sample.Raw.csv',row+'R.Sample.Raw.csv',row+'.txt')
     outfile = row+".pdf"
     sourcefile = row+".txt"
-    gp.write("set output '"+outfile+"' \n")
-    gp.write("plot [200:][0:100] '"+sourcefile+"' u 1:2 w l ls 24 t 'Transmission',\\\n '' u 1:3 w l ls 4 t 'Reflection',\\\n '' u 1:4 w l ls 14 t 'Absorption'\n")
+    gp.write("@pdf\nset output '"+outfile+"' \n")
+    gp.write("set xrange [200:2500] \n set yrange [0:100]\n")
+    gp.write("plot '"+sourcefile+"' u 1:2 w l lw 3 smooth bezier t 'Transmission',\\\n '' u 1:3 w l lw 3 smooth bezier t 'Reflection',\\\n '' u 1:4 w l lw 3 smooth bezier t 'Absorption'\n")
     gp.write("set output\n")
     gp.write("system 'open "+outfile+"'\n\n")
     

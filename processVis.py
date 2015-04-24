@@ -1,7 +1,10 @@
 #!/usr/local/bin/python3
 
-import pandas as pd, numpy as np, glob, sys
+import pandas as pd, numpy as np, glob, sys,os
 from datetime import datetime
+
+interval = 1
+
 
 def readline_number_x(file,x):
     
@@ -33,7 +36,7 @@ def buildrow(i):
     i=i+interval
 
 basefile = sys.argv[1]
-outfile = basefile+'-compiled.txt'
+outfile = basefile+'.txt'
 filelist = glob.glob(basefile+"*[0-9]*")
 
 
@@ -54,7 +57,7 @@ headers.insert(0,"#Date/Time")
 
 i=0
 
-interval = 1
+
 
 while i<len(filelist):
     buildrow(i)
@@ -75,6 +78,16 @@ df["Cumulative Time"] = df["Cumulative Time"].map('{:.5f}'.format)
 
 
 
-df.to_csv("../"+outfile,index=False,sep="\t",na_rep="NaN")
+df.to_csv(outfile,index=False,sep="\t",na_rep="NaN")
 
 
+with open("../"+outfile,"w") as output:
+    i = 0
+    with open(outfile) as f:
+        for line in f:
+            if i == 0:
+                output.write(line.replace('#Date/Time\tCumulative Time','Date\tTime\tElapsed'))
+            else:
+                output.write(line)
+            i += 1
+os.remove(outfile)

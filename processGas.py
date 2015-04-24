@@ -25,7 +25,7 @@ with open(file,"w") as output:
 os.remove("temp.txt")  
 
 
-df = pd.read_csv(file,names=["Date Time","N_2","O_2","4%H_2","10%CO","CH4","H_2"],skiprows=1,sep="\t")
+df = pd.read_csv(file,names=["Date Time","N_2","O_2","H_2","CO","CO_2","CH_4"],skiprows=1,sep="\t")
 
 
 
@@ -36,6 +36,10 @@ df["Elapsed"] = (df["Date Time"]-df["Date Time"].shift()).fillna(0)
 df["Elapsed"] = df["Elapsed"].cumsum(axis=0)
 df["Elapsed"] = df["Elapsed"] / np.timedelta64(1,'h')
 df["Elapsed"] = df["Elapsed"].map('{:.5f}'.format)
+
+
+num = df._get_numeric_data()
+num[num < 0] = 0
 
 # df["N_2"]= df["N_2"].where(df["N_2"]>0)
 # df["O_2"]= df["O_2"].where(df["O_2"]>0)

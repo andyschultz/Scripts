@@ -12,8 +12,8 @@ nir = glob.glob("*transmission0*.txt")
 
 df = pd.read_csv(gasflows, skiprows=1,sep="\t", header=None, index_col=0, names = ['time','N2','O2','H2','CO','CO2','CH4'])
 
-df['H2']=df['H2']/25
-df['CO']=df['CO']/10
+# df['H2']=df['H2']/25
+# df['CO']=df['CO']/10
 
 gp = open('plotall.gp','w')
 gp.write('set terminal pngcairo enhanced fontscale 3 size 1800,1200 font "Helvetica,12"\n')
@@ -34,7 +34,7 @@ for file in nir:
     
     output = file.rstrip('.txt')+'.png'
     
-    H2 = np.around(row[datetime]['H2']+row[datetime]['CH4'],decimals=1)
+    H2 = np.around(row[datetime]['H2'],decimals=1)
     labelheight = str((H2/100 + 0.1))
     H2 = str(H2)
     
