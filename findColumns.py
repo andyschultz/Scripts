@@ -2,6 +2,7 @@
 
 # Takes as arguments the data file and desired wavelengths. 
 # Returns the appropriate column index for plotting with gnuplot
+# Run as: python3 findcColumns.py <filename> <space separated wavelength list>
 
 import numpy as np,sys,pandas as pd
 

@@ -1,13 +1,25 @@
 #!/usr/local/bin/python3
 
-import pandas as pd, numpy as np, readline
+# ======================================================
+# Merges processed UV/Vis and NIR files from System 2
+# ======================================================
 
+
+import pandas as pd, numpy as np, readline
+# ======================================================
+# Change the following lines as necessary
+# ======================================================
 gasflows = "gasflows.txt"
 nir = "nir.txt"
 vis = "vis.txt"
 output = "fulldata.txt"
+# ======================================================
+# ======================================================
+
+
 
 def stripseconds(dataframe):
+    # Removes second information from timestamp
     i = 0
     while i<dataframe.shape[0]:
         j = dataframe["Timestamp"][i].split(":")

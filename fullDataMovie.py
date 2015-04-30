@@ -21,34 +21,25 @@ iterator = 1 #Interval between readings to add to movie
 import pandas as pd, glob, numpy as np
 from os import system
 
-
+# Import gasflow data
 gasflows= pd.read_csv(gasdata, skiprows=1,sep="\t", header=None, index_col=0, names = ['time','N2','O2','H2','CO','CO2','CH4'])
-
-# gasflows['H2']=gasflows['H2']/25
-# gasflows['CO']=gasflows['CO']/10
-
+# Import processed spectra data
 df = pd.read_csv(sourcefile, sep='\t', header=0,parse_dates=0)
-
+# Remove unneeded columns
 poppable = ["Elapsed","N_2","O_2","H_2","CO","CO_2","CH_4"]
 for item in poppable:
     df.pop(item)
-
+# Transpose for plotting with gnuplot and creat temp file
 plotting = df.transpose()
-
 columns = plotting.shape[1]
-
 plotting.to_csv("tempForPlotting.txt",sep='\t')
 
 
-
+# Build the gnuplot script file
 gp = open("temp.gp",'w')
 gp.write("set terminal pngcairo \n")
 # gp.write("@colorlist\n")
 gp.write('set style fill solid 0.5\n')
-
-
-
-
 number = str(int(columns/iterator))
 i=0 # Used to pick which lines to plot
 j=1 # Used for file naming
@@ -132,6 +123,7 @@ while i<columns:
     
 gp.close()
 
+# Execute gnuplot, ffmpeg to build the movie, and handbrake to convert to standard format
 system("gnuplot temp.gp")
 system('ffmpeg -f image2 -r 30 -i %5d.png -vcodec libx264 -y temp.mp4')
 system('HandBrakeCLI -i temp.mp4 -o '+movieout+' --preset="Normal"')
